@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -37,12 +37,12 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
-        composable("contactData") { ContactDataActivity() }
+        composable("contactData") { ContactDataActivity(navController) } // Pasando el NavController a ContactDataActivity
     }
 }
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         Button(onClick = { navController.navigate("contactData") }) {
             Text("Ir a Datos de Contacto")
