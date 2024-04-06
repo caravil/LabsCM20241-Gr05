@@ -1,4 +1,6 @@
+import android.content.res.Configuration
 import android.util.Patterns
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,25 +18,30 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactDataActivity() {
+fun ContactDataActivity(navController: NavController) {
     // Definir los campos de datos
     var telefono by remember { mutableStateOf("") }
     var direccion by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var pais by remember { mutableStateOf("") }
     var ciudad by remember { mutableStateOf("") }
+
+    // Define un estado para controlar si los datos se enviaron correctamente
+    var datosEnviadosExitosamente by remember { mutableStateOf(false) }
 
     // Variables para controlar los mensajes de error
     var telefonoError by remember { mutableStateOf(false) }
@@ -48,6 +55,9 @@ fun ContactDataActivity() {
     val ciudadIcono = Icons.Filled.LocationOn
     val paisIcono = Icons.Filled.Place
 
+    // Verifica si la orientación es landscape
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     // Función para validar los campos obligatorios
     fun validarCamposObligatorios(): Boolean {
         var isValid = true
@@ -58,77 +68,109 @@ fun ContactDataActivity() {
         return isValid
     }
 
-    // Columna con los campos de entrada
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
+    // Aquí puedes definir tus composiciones dependiendo de si estás en modo paisaje o no
+    if (isLandscape) {
+        // Composiciones específicas para orientación landscape
+    } else {
+        // Composiciones específicas para orientación portrait
 
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Informacion de contacto",
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        CampoDeEntrada(
-            value = telefono,
-            onValueChange = { telefono = it },
-            label = "Teléfono*",
-            keyboardType = KeyboardType.Phone,
-            icono = telefonoIcono,
-            isError = telefonoError
-        )
-        CampoDeEntrada(
-            value = direccion,
-            onValueChange = { direccion = it },
-            label = "Dirección",
-            icono = direccionIcono
-        )
-        CampoDeEntrada(
-            value = email,
-            onValueChange = { email = it },
-            label = "Email*",
-            keyboardType = KeyboardType.Email,
-            icono = emailIcono,
-            isError = emailError
-        )
-
-        CampoDeEntrada(
-            value = ciudad,
-            onValueChange = { ciudad = it },
-            label = "Ciudad",
-            keyboardType = KeyboardType.Email,
-            icono = ciudadIcono
-        )
-
-        CampoDeEntrada(
-            value = pais,
-            onValueChange = { pais = it },
-            label = "Pais*",
-            icono = paisIcono,
-            isError = paisError
-        )
-
-        Button(
-            onClick = {
-                if (validarCamposObligatorios()) {
-                    // Todos los campos requeridos están llenos, proceder con el envío
-                    // Aquí puedes realizar cualquier acción necesaria, como enviar los datos a un servidor
-                } else {
-                    // Mostrar un mensaje de error indicando los campos que faltan o son inválidos
-                }
-            },
+        // Columna con los campos de entrada
+        Column(
             modifier = Modifier
-            .align(Alignment.End)
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+                .fillMaxSize()
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text("Enviar")
+
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Informacion de contacto",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            CampoDeEntrada(
+                value = telefono,
+                onValueChange = { telefono = it },
+                label = "Teléfono*",
+                keyboardType = KeyboardType.Phone,
+                icono = telefonoIcono,
+                isError = telefonoError
+            )
+            CampoDeEntrada(
+                value = direccion,
+                onValueChange = { direccion = it },
+                label = "Dirección",
+                icono = direccionIcono
+            )
+            CampoDeEntrada(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email*",
+                keyboardType = KeyboardType.Email,
+                icono = emailIcono,
+                isError = emailError
+            )
+
+            CampoDeEntrada(
+                value = ciudad,
+                onValueChange = { ciudad = it },
+                label = "Ciudad",
+                keyboardType = KeyboardType.Email,
+                icono = ciudadIcono
+            )
+
+            CampoDeEntrada(
+                value = pais,
+                onValueChange = { pais = it },
+                label = "Pais*",
+                icono = paisIcono,
+                isError = paisError
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                // Botón para enviar datos
+                Button(
+                    onClick = {
+                        if (validarCamposObligatorios()) {
+                            // Todos los campos requeridos están llenos, proceder con el envío
+                            // Actualizar el estado para indicar que los datos se han enviado con éxito
+                            datosEnviadosExitosamente = true
+                        } else {
+                            // Mostrar un mensaje de error indicando los campos que faltan o son inválidos
+                            // Esto podría hacerse mostrando un Toast, un Snackbar o simplemente actualizando un estado para mostrar un mensaje de error
+                        }
+                    }
+                ) {
+                    Text("Enviar")
+                }
+
+                // Botón para retroceder sin enviar datos
+                Button(
+                    onClick = {
+                        // Puedes simplemente retroceder usando el NavController
+                        navController.popBackStack()
+                    }
+                ) {
+                    Text("Retroceder")
+                }
+            }
+        }
+
+        // Navegar a la pantalla inicial si los datos se enviaron correctamente
+        if (datosEnviadosExitosamente) {
+            // Utiliza una acción de navegación para volver a la página inicial
+            // Esto podría ser mediante un NavController u otra forma de navegación en tu aplicación
+            navController.navigate("ruta_a_la_pantalla_inicial")
         }
     }
 }
@@ -161,5 +203,6 @@ fun CampoDeEntrada(
 @Preview
 @Composable
 fun ContactDataPreview() {
-    ContactDataActivity()
+    val navController = rememberNavController() // NavController falso para la vista previa
+    ContactDataActivity(navController = navController)
 }
