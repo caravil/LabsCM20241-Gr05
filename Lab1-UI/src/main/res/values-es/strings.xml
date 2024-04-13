@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Labs20241-Gr05</string>
+
+    <!-- Título del AppBar -->
+    <string name="appbar_title">Información de Contacto</string>
+
+    <!-- Contacto -->
+    <string name="telefono_label">Teléfono*</string>
+    <string name="email_label">Correo Electrónico*</string>
+    <string name="ciudad_label">Ciudad</string>
+    <string name="direccion_label">Dirección</string>
+    <string name="pais_label">País*</string>
+    <string name="enviar_button">Enviar</string>
+</resources>

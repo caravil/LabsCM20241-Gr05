@@ -1,5 +1,6 @@
 
 import android.content.res.Configuration
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -53,7 +54,7 @@ fun ContactDataActivity(navController: NavController, viewModel: ContactViewMode
 
     Scaffold(
         topBar = {
-            AppBar(title = "Contact Information", onNavigationClick = { navController.popBackStack() })
+            AppBar(title = "Informacion de Contacto", onNavigationClick = { navController.popBackStack() })
         }
     ) { innerPadding ->
         if (isLandscape) {
@@ -64,21 +65,21 @@ fun ContactDataActivity(navController: NavController, viewModel: ContactViewMode
                     .verticalScroll(scrollState)
             ) {
                 Column(modifier = Modifier.weight(1f).padding(8.dp)) {
-                    ContactField("Phone*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
+                    ContactField("Telefono*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
                         viewModel.telefono = it
                     }
-                    ContactField("Email*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
+                    ContactField("Correo*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
                         viewModel.email = it
                     }
-                    ContactField("City", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
+                    ContactField("Ciudad", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
                         viewModel.ciudad = it
                     }
                 }
                 Column(modifier = Modifier.weight(1f).padding(8.dp)) {
-                    ContactField("Address", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
+                    ContactField("Direccion", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
                         viewModel.direccion = it
                     }
-                    ContactField("Country*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
+                    ContactField("Pais*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
                         viewModel.pais = it
                     }
                     SubmitButton(navController, viewModel)
@@ -91,19 +92,19 @@ fun ContactDataActivity(navController: NavController, viewModel: ContactViewMode
                     .padding(innerPadding)
                     .verticalScroll(scrollState)
             ) {
-                ContactField("Phone*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
+                ContactField("Telefono*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
                     viewModel.telefono = it
                 }
-                ContactField("Address", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
+                ContactField("Direccion", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
                     viewModel.direccion = it
                 }
-                ContactField("Email*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
+                ContactField("Correo*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
                     viewModel.email = it
                 }
-                ContactField("City", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
+                ContactField("Ciudad", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
                     viewModel.ciudad = it
                 }
-                ContactField("Country*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
+                ContactField("Pais*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
                     viewModel.pais = it
                 }
                 SubmitButton(navController, viewModel)
@@ -171,12 +172,20 @@ fun SubmitButton(navController: NavController, viewModel: ContactViewModel) {
             viewModel.paisError = viewModel.pais.isBlank()
 
             if (!viewModel.telefonoError && !viewModel.emailError && !viewModel.paisError) {
+                // Registro en el Logcat
+                Log.d("ContactDataActivity", "Telefono: ${viewModel.telefono}")
+                Log.d("ContactDataActivity", "Correo: ${viewModel.email}")
+                Log.d("ContactDataActivity", "Ciudad: ${viewModel.ciudad}")
+                Log.d("ContactDataActivity", "Direccion: ${viewModel.direccion}")
+                Log.d("ContactDataActivity", "Pais: ${viewModel.pais}")
+
+                // Navegación a la siguiente pantalla
                 navController.navigate("MainActivity")
             }
         },
         modifier = Modifier.padding(16.dp).fillMaxWidth()
     ) {
-        Text("Submit")
+        Text("Enviar")
     }
 }
 
