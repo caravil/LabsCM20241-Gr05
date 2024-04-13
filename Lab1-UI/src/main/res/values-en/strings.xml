@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Labs20241-Gr05</string>
+
+    <!-- Título del AppBar -->
+    <string name="appbar_title">Contact Information</string>
+
+    <!-- Contacto -->
+    <string name="telefono_label">Phone*</string>
+    <string name="email_label">Email*</string>
+    <string name="ciudad_label">City</string>
+    <string name="direccion_label">Address</string>
+    <string name="pais_label">Country*</string>
+    <string name="enviar_button">Submit</string>
 </resources>

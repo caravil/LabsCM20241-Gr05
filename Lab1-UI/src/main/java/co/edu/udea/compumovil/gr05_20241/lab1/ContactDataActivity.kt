@@ -22,23 +22,38 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
+class ContactViewModel : ViewModel() {
+    var telefono by mutableStateOf("")
+    var email by mutableStateOf("")
+    var ciudad by mutableStateOf("")
+    var direccion by mutableStateOf("")
+    var pais by mutableStateOf("")
+
+    var telefonoError by mutableStateOf(false)
+    var emailError by mutableStateOf(false)
+    var paisError by mutableStateOf(false)
+}
+
 @Composable
-fun ContactDataActivity(navController: NavController) {
+fun ContactDataActivity(navController: NavController, viewModel: ContactViewModel = viewModel()) {
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
-            AppBar("Información de contacto", onNavigationClick = { navController.popBackStack() })
+            AppBar(title = "Contact Information", onNavigationClick = { navController.popBackStack() })
         }
     ) { innerPadding ->
         if (isLandscape) {
@@ -49,14 +64,24 @@ fun ContactDataActivity(navController: NavController) {
                     .verticalScroll(scrollState)
             ) {
                 Column(modifier = Modifier.weight(1f).padding(8.dp)) {
-                    ContactField("Teléfono*", Icons.Filled.Phone, KeyboardType.Phone)
-                    ContactField("Email*", Icons.Filled.Email, KeyboardType.Email)
-                    ContactField("Ciudad", Icons.Filled.LocationOn, KeyboardType.Text)
+                    ContactField("Phone*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
+                        viewModel.telefono = it
+                    }
+                    ContactField("Email*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
+                        viewModel.email = it
+                    }
+                    ContactField("City", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
+                        viewModel.ciudad = it
+                    }
                 }
                 Column(modifier = Modifier.weight(1f).padding(8.dp)) {
-                    ContactField("Dirección", Icons.Filled.Home, KeyboardType.Text)
-                    ContactField("País*", Icons.Filled.Place, KeyboardType.Text)
-                    SubmitButton(navController)
+                    ContactField("Address", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
+                        viewModel.direccion = it
+                    }
+                    ContactField("Country*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
+                        viewModel.pais = it
+                    }
+                    SubmitButton(navController, viewModel)
                 }
             }
         } else {
@@ -66,12 +91,22 @@ fun ContactDataActivity(navController: NavController) {
                     .padding(innerPadding)
                     .verticalScroll(scrollState)
             ) {
-                ContactField("Teléfono*", Icons.Filled.Phone, KeyboardType.Phone)
-                ContactField("Dirección", Icons.Filled.Home, KeyboardType.Text)
-                ContactField("Email*", Icons.Filled.Email, KeyboardType.Email)
-                ContactField("Ciudad", Icons.Filled.LocationOn, KeyboardType.Text)
-                ContactField("País*", Icons.Filled.Place, KeyboardType.Text)
-                SubmitButton(navController)
+                ContactField("Phone*", Icons.Filled.Phone, KeyboardType.Phone, viewModel.telefono, viewModel.telefonoError) {
+                    viewModel.telefono = it
+                }
+                ContactField("Address", Icons.Filled.Home, KeyboardType.Text, viewModel.direccion, false) {
+                    viewModel.direccion = it
+                }
+                ContactField("Email*", Icons.Filled.Email, KeyboardType.Email, viewModel.email, viewModel.emailError) {
+                    viewModel.email = it
+                }
+                ContactField("City", Icons.Filled.LocationOn, KeyboardType.Text, viewModel.ciudad, false) {
+                    viewModel.ciudad = it
+                }
+                ContactField("Country*", Icons.Filled.Place, KeyboardType.Text, viewModel.pais, viewModel.paisError) {
+                    viewModel.pais = it
+                }
+                SubmitButton(navController, viewModel)
             }
         }
     }
@@ -84,28 +119,21 @@ fun AppBar(title: String, onNavigationClick: () -> Unit) {
         title = { Text(title) },
         navigationIcon = {
             IconButton(onClick = onNavigationClick) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Regresar")
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go back")
             }
         }
     )
 }
 
 @Composable
-fun ContactField(label: String, icon: ImageVector, keyboardType: KeyboardType) {
-    var value by remember { mutableStateOf("") }
-
-    val isError = remember { mutableStateOf(false) }
-
+fun ContactField(label: String, icon: ImageVector, keyboardType: KeyboardType, value: String, isError: Boolean, onValueChange: (String) -> Unit) {
     CampoDeEntrada(
         value = value,
-        onValueChange = { newValue ->
-            value = newValue
-            isError.value = label.endsWith("*") && newValue.isEmpty()
-        },
+        onValueChange = onValueChange,
         label = label,
         icono = icon,
         keyboardType = keyboardType,
-        isError = isError.value // Aquí se usa isError.value para pasar el valor booleano a CampoDeEntrada
+        isError = isError
     )
 }
 
@@ -123,10 +151,10 @@ fun CampoDeEntrada(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text(label) },
+            label = { Text(label, color = if (isError) Color.Red else Color.Unspecified) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType,
-                imeAction = ImeAction.Next // Esto cambiará el botón "Enter" por "Siguiente"
+                imeAction = ImeAction.Next
             ),
             isError = isError,
             modifier = Modifier.weight(1f)
@@ -135,39 +163,30 @@ fun CampoDeEntrada(
 }
 
 @Composable
-fun SubmitButton(navController: NavController) {
+fun SubmitButton(navController: NavController, viewModel: ContactViewModel) {
     Button(
         onClick = {
-            // Aquí podrías obtener los valores de los campos de entrada y pasarlos a la función de validación
-            val isValid = validarCamposObligatorios(
-                telefono = "valor_telefono",
-                email = "valor_email",
-                pais = "valor_pais"
-            )
-            if (isValid) {
+            viewModel.telefonoError = viewModel.telefono.isBlank()
+            viewModel.emailError = !Patterns.EMAIL_ADDRESS.matcher(viewModel.email).matches()
+            viewModel.paisError = viewModel.pais.isBlank()
+
+            if (!viewModel.telefonoError && !viewModel.emailError && !viewModel.paisError) {
                 navController.navigate("MainActivity")
             }
         },
         modifier = Modifier.padding(16.dp).fillMaxWidth()
     ) {
-        Text("Enviar")
+        Text("Submit")
     }
-}
-
-fun validarCamposObligatorios(telefono: String, email: String, pais: String): Boolean {
-    val telefonoValido = telefono.isNotBlank()
-    val emailValido = Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    val paisValido = pais.isNotBlank()
-    // Otros campos opcionales pueden agregarse y validarse aquí según sea necesario
-    return telefonoValido && emailValido && paisValido
 }
 
 @Preview
 @Composable
 fun ContactDataPreview() {
-    val navController = rememberNavController() // NavController falso
-    ContactDataActivity(navController = navController)
+    val navController = rememberNavController()
+    ContactDataActivity(navController)
 }
+
 
 @Preview(name = "Portrait", widthDp = 360, heightDp = 640)
 @Composable
