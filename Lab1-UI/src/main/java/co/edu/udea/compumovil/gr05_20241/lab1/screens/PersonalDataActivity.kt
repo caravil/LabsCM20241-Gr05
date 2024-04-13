@@ -33,23 +33,51 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataActivity (navController: NavController){
-    var sexo by remember {
-        mutableStateOf(false)
+    var hombreSeleccionado by remember { mutableStateOf(false) }
+    var mujerSeleccionada by remember { mutableStateOf(false) }
+
+    var nombres by remember {
+        mutableStateOf("")
     }
 
+    var apellidos by remember {
+        mutableStateOf("")
+    }
     var fecha = rememberDatePickerState()
 
     Column {
 
-        ContactField(label = "Nombres", icon = Icons.Filled.Person, keyboardType = KeyboardType.Text, value="pollito", isError = false){}
-        ContactField(label = "Apellidos", icon =Icons.Filled.Person , keyboardType = KeyboardType.Text, value="chicken", isError = false){}
+        ContactField(
+            label = "Nombres",
+            icon = Icons.Filled.Person,
+            keyboardType = KeyboardType.Text,
+            value=nombres,
+            isError = false,
+            onValueChange = {nombres = it}
+        )
+        ContactField(
+            label = "Apellidos",
+            icon =Icons.Filled.Person,
+            keyboardType = KeyboardType.Text,
+            value=apellidos,
+            isError = false,
+            onValueChange = {apellidos = it}
+        )
         Row (modifier = Modifier.padding(15.dp)){
             Icon(imageVector = Icons.Filled.Star, contentDescription = "sexo")
             Spacer(modifier = Modifier.width(15.dp))
             Text(text = "Sexo")
-            RadioButton(selected = sexo, onClick = { sexo = true})
+            RadioButton(
+                selected = hombreSeleccionado,
+                onClick = { hombreSeleccionado = !hombreSeleccionado;
+                          mujerSeleccionada = false},
+            )
             Text(text= "Hombre")
-            RadioButton(selected = sexo, onClick = { sexo= false })
+            RadioButton(
+                selected = mujerSeleccionada,
+                onClick = { mujerSeleccionada = !mujerSeleccionada;
+                          hombreSeleccionado = false},
+            )
             Text(text = "Mujer")
         }
 
