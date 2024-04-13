@@ -34,6 +34,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import co.edu.udea.compumovil.gr05_20241.lab1.navigation.AppScreens
 
 class ContactViewModel : ViewModel() {
     var telefono by mutableStateOf("")
@@ -180,7 +181,7 @@ fun SubmitButton(navController: NavController, viewModel: ContactViewModel) {
                 Log.d("ContactDataActivity", "Pais: ${viewModel.pais}")
 
                 // Navegación a la siguiente pantalla
-                navController.navigate("MainActivity")
+                navController.navigate(AppScreens.HomeScreen.route)
             }
         },
         modifier = Modifier.padding(16.dp).fillMaxWidth()

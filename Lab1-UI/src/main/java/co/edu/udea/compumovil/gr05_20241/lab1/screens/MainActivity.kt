@@ -1,4 +1,4 @@
-package co.edu.udea.compumovil.gr05_20241.lab1
+package co.edu.udea.compumovil.gr05_20241.lab1.screens
 
 import ContactDataActivity
 import android.os.Bundle
@@ -16,6 +16,8 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import co.edu.udea.compumovil.gr05_20241.lab1.navigation.AppNavigation
+import co.edu.udea.compumovil.gr05_20241.lab1.navigation.AppScreens
 import co.edu.udea.compumovil.gr05_20241.lab1.ui.theme.Labs20241Gr05Theme
 
 class MainActivity : ComponentActivity() {
@@ -25,27 +27,11 @@ class MainActivity : ComponentActivity() {
             Labs20241Gr05Theme {
                 // Use MaterialTheme.colors.background para el color de fondo
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Navigation()
+                    AppNavigation()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Navigation() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
-        composable("contactData") { ContactDataActivity(navController) } // Pasando el NavController a ContactDataActivity
-    }
-}
 
-@Composable
-fun HomeScreen(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Button(onClick = { navController.navigate("contactData") }) {
-            Text("Ir a Datos de Contacto")
-        }
-    }
-}

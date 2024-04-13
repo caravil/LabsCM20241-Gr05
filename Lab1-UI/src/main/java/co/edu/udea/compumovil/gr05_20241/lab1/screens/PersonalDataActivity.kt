@@ -24,12 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import co.edu.udea.compumovil.gr05_20241.lab1.navigation.AppNavigation
+import co.edu.udea.compumovil.gr05_20241.lab1.navigation.AppScreens
 import java.util.Calendar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PersonalDataActivity (){
+fun PersonalDataActivity (navController: NavController){
     var sexo by remember {
         mutableStateOf(false)
     }
@@ -53,7 +56,9 @@ fun PersonalDataActivity (){
 
 
         DatePicker(state = fecha)
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {
+            navController.navigate(AppScreens.ContactDataActivity.route)
+        }) {
             Text(text = "Siguiente")
 
         }
@@ -76,5 +81,5 @@ fun PersonalDataActivity (){
 @Preview
 @Composable
 fun previa (){
-    PersonalDataActivity()
+    AppNavigation()
 }
