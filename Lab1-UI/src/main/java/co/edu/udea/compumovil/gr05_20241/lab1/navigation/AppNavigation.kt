@@ -11,7 +11,7 @@ import co.edu.udea.compumovil.gr05_20241.lab1.screens.HomeScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppScreens.HomeScreen.route) {
+    NavHost(navController = navController, startDestination = AppScreens.PersonalDataActivity.route) {
         composable(route = AppScreens.HomeScreen.route) {
             HomeScreen(navController)
         }
